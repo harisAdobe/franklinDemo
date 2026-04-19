@@ -122,26 +122,10 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-function clearStorageOnReload() {
-  const [nav] = performance.getEntriesByType('navigation');
-  if (nav?.type !== 'reload') return;
-
-  try { localStorage.clear(); } catch { /* storage may be blocked */ }
-  try { sessionStorage.clear(); } catch { /* storage may be blocked */ }
-
-  document.cookie.split(';').forEach((c) => {
-    const name = c.split('=')[0].trim();
-    if (!name) return;
-    document.cookie = `${name}=; Max-Age=0; path=/`;
-    document.cookie = `${name}=; Max-Age=0; path=/; domain=${window.location.hostname}`;
-  });
-}
-
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
 }
 
-clearStorageOnReload();
 loadPage();
